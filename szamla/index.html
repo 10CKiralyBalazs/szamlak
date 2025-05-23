@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Számlakezelő</title>
+</head>
+<body>
+  <h1>Számlák</h1>
+  <div id="invoice-list"></div>
+
+  <h2>Új / Szerkesztés</h2>
+  <form id="invoice-form">
+    <input type="hidden" id="invoice-id">
+    <h3>Kiállító</h3>
+    <input type="text" id="issuer-name" placeholder="Név" required><br>
+    <input type="text" id="issuer-address" placeholder="Cím" required><br>
+    <input type="text" id="issuer-tax" placeholder="Adószám" required><br>
+    <h3>Vevő</h3>
+    <input type="text" id="customer-name" placeholder="Név" required><br>
+    <input type="text" id="customer-address" placeholder="Cím" required><br>
+    <input type="text" id="customer-tax" placeholder="Adószám" required><br>
+    <input type="text" id="invoice-number" placeholder="Számla száma" required><br>
+    <input type="date" id="invoice-date" required><br>
+    <input type="date" id="performance-date" required><br>
+    <input type="date" id="due-date" required><br>
+    <input type="number" id="total" placeholder="Végösszeg" required><br>
+    <input type="number" id="vat" placeholder="ÁFA" required><br>
+    <button type="submit">Mentés</button>
+  </form>
+
+  <script>
+    async function fetchInvoices() {
+      const res = await fetch('http://localhost:5001/invoices');
+      const data = await res.json();
+      document.getElementById('invoice-list').innerHTML = data.map(i => `
+        <div>
+          <h3>${i.invoiceNumber}</h3>
+          <p>Kiállító: ${i.issuer.name}, ${i.issuer.address} (${i.issuer.taxNumber})</p>
+          <p>Vevő: ${i.customer.name}, ${i.customer.address} (${i.customer.taxNumber})</p>
+          <p>Dátum: ${new Date(i.invoiceDate).toLocaleDateString()} | Teljesítés: ${new Date(i.performanceDate).toLocaleDateString()} | Határidő: ${new Date(i.dueDate).toLocaleDateString()}</p>
+          <p>Végösszeg: ${i.totalAmount} Ft | ÁFA: ${i.vatAmount} Ft</p>
+          <button onclick="editInvoice('${i._id}')">Szerkesztés</button>
+          <button onclick="deleteInvoice('${i._id}')">Törlés</button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteInvoice(id) {
+      await fetch(`http://localhost:5001/invoices/${id}`, { method: 'DELETE' });
+      fetchInvoices();
+    }
+
+    async function editInvoice(id) {
+      const res = await fetch(`http://localhost:5001/invoices`);
+      const invoices = await res.json();
+      const i = invoices.find(inv => inv._id === id);
+      document.getElementById('invoice-id').value = i._id;
+      document.getElementById('issuer-name').value = i.issuer.name;
+      document.getElementById('issuer-address').value = i.issuer.address;
+      document.getElementById('issuer-tax').value = i.issuer.taxNumber;
+      document.getElementById('customer-name').value = i.customer.name;
+      document.getElementById('customer-address').value = i.customer.address;
+      document.getElementById('customer-tax').value = i.customer.taxNumber;
+      document.getElementById('invoice-number').value = i.invoiceNumber;
+      document.getElementById('invoice-date').value = i.invoiceDate.split('T')[0];
+      document.getElementById('performance-date').value = i.performanceDate.split('T')[0];
+      document.getElementById('due-date').value = i.dueDate.split('T')[0];
+      document.getElementById('total').value = i.totalAmount;
+      document.getElementById('vat').value = i.vatAmount;
+    }
+
+    document.getElementById('invoice-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        issuer: {
+          name: document.getElementById('issuer-name').value,
+          address: document.getElementById('issuer-address').value,
+          taxNumber: document.getElementById('issuer-tax').value
+        },
+        customer: {
+          name: document.getElementById('customer-name').value,
+          address: document.getElementById('customer-address').value,
+          taxNumber: document.getElementById('customer-tax').value
+        },
+        invoiceNumber: document.getElementById('invoice-number').value,
+        invoiceDate: document.getElementById('invoice-date').value,
+        performanceDate: document.getElementById('performance-date').value,
+        dueDate: document.getElementById('due-date').value,
+        totalAmount: document.getElementById('total').value,
+        vatAmount: document.getElementById('vat').value
+      };
+
+      const id = document.getElementById('invoice-id').value;
+
+      if (id) {
+        await fetch(`http://localhost:5001/invoices/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } else {
+        await fetch('http://localhost:5001/invoices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      }
+
+      document.getElementById('invoice-form').reset();
+      fetchInvoices();
+    });
+
+    fetchInvoices();
+  </script>
+</body>
+</html>
