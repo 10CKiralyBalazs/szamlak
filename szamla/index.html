@@ -13,7 +13,7 @@
       padding: 20px;
       color: #333;
     }
-  
+
     h1, h2, h3 {
       color: #2c3e50;
     }
@@ -52,36 +52,7 @@
     button:hover {
       background-color: #2980b9;
     }
-  
-    #invoice-list > div {
-      background-color: #ffffff;
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      border-left: 5px solid #3498db;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-  
-    #invoice-list h3 {
-      margin: 0 0 10px;
-    }
-  
-    #invoice-list p {
-      margin: 5px 0;
-    }
-  
-    #invoice-list button {
-      background-color: #e67e22;
-      margin-right: 10px;
-    }
-  
-    #invoice-list button:last-child {
-      background-color: #e74c3c;
-    }
-  
-    #invoice-list button:hover {
-      opacity: 0.9;
-    }
+
   </style>
 
   <h1>Számlák</h1>
@@ -111,6 +82,8 @@
   </form>
 
   <script>
+    
+
     async function fetchInvoices() {
       const res = await fetch('http://localhost:5001/invoices');
       const data = await res.json();
@@ -126,7 +99,8 @@
         </div>
       `).join('');
     }
-
+    
+   
     async function deleteInvoice(id) {
       await fetch(`http://localhost:5001/invoices/${id}`, { method: 'DELETE' });
       fetchInvoices();
