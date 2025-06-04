@@ -5,6 +5,85 @@
   <title>Számlakezelő</title>
 </head>
 <body>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f6f8fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+  
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+  
+    form {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+  
+    form input[type="text"],
+    form input[type="date"],
+    form input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+  
+    button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+  
+    button:hover {
+      background-color: #2980b9;
+    }
+  
+    #invoice-list > div {
+      background-color: #ffffff;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-left: 5px solid #3498db;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+  
+    #invoice-list h3 {
+      margin: 0 0 10px;
+    }
+  
+    #invoice-list p {
+      margin: 5px 0;
+    }
+  
+    #invoice-list button {
+      background-color: #e67e22;
+      margin-right: 10px;
+    }
+  
+    #invoice-list button:last-child {
+      background-color: #e74c3c;
+    }
+  
+    #invoice-list button:hover {
+      opacity: 0.9;
+    }
+  </style>
+
   <h1>Számlák</h1>
   <div id="invoice-list"></div>
 
@@ -20,8 +99,11 @@
     <input type="text" id="customer-address" placeholder="Cím" required><br>
     <input type="text" id="customer-tax" placeholder="Adószám" required><br>
     <input type="text" id="invoice-number" placeholder="Számla száma" required><br>
+    <h3>Számla kelte</h3>
     <input type="date" id="invoice-date" required><br>
+    <h3>Teljesítés Dátuma</h3>
     <input type="date" id="performance-date" required><br>
+    <h3>Fizetési Határidő</h3>
     <input type="date" id="due-date" required><br>
     <input type="number" id="total" placeholder="Végösszeg" required><br>
     <input type="number" id="vat" placeholder="ÁFA" required><br>
