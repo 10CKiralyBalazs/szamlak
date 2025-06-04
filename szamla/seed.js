@@ -34,5 +34,4 @@ async function seed() {
   console.log('Számlák feltöltve.');
   process.exit();
 }
-
 seed();
